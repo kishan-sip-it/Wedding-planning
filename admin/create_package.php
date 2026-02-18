@@ -1,8 +1,8 @@
 <?php
 include '../includes/auth_check.php';
-if ($_SESSION['role'] !== 'admin') { 
-    header("Location: ../login.php"); 
-    exit(); 
+if ($_SESSION['role'] !== 'admin') {
+    header("Location: ../login.php");
+    exit();
 }
 include '../config/db.php';
 
@@ -66,7 +66,7 @@ if ($_POST) {
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Create Package</title>
+    <title>Create Package | Samaaroh Admin</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../assets/style.css">
 </head>
@@ -82,7 +82,7 @@ if ($_POST) {
             </div>
         <?php endif; ?>
 
-        <form method="POST" id="package-form">
+        <form method="POST">
             <div class="mb-3">
                 <label class="form-label">Package Name</label>
                 <input type="text" name="name" class="form-control" required>
@@ -106,10 +106,20 @@ if ($_POST) {
                 <label class="form-label">Select Services</label>
                 <div id="services-container">
                     <!-- Services will be added here -->
+                    <?php foreach ($services as $service): ?>
+                        <div class="service-item mb-2 p-2 border rounded d-flex align-items-center">
+                            <input type="checkbox" name="services[]" value="<?= $service['service_id'] ?>" class="me-2">
+                            <div>
+                                <strong><?= htmlspecialchars($service['title']) ?></strong>
+                                <div class="text-muted">
+                                    by <?= htmlspecialchars($service['provider_name']) ?> | 
+                                    ₹<?= number_format($service['price'], 2) ?> | 
+                                    <?= ucfirst($service['category']) ?>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
                 </div>
-                <button type="button" class="btn btn-outline-primary mt-2" id="add-service-btn">
-                    + Add Service
-                </button>
             </div>
             
             <div class="mb-3">
@@ -122,25 +132,33 @@ if ($_POST) {
         </form>
     </div>
 
-    <!-- Service template (hidden) -->
-    <template id="service-template">
-        <div class="service-item mb-2 p-2 border rounded">
-            <div class="d-flex align-items-center">
-                <select name="services[]" class="form-select service-select me-2" required>
-                    <option value="">-- Select Service --</option>
-                    <?php foreach ($services as $service): ?>
-                        <option value="<?= $service['service_id'] ?>" data-price="<?= $service['price'] ?>">
-                            <?= htmlspecialchars("{$service['title']} (by {$service['provider_name']}) - ₹" . number_format($service['price'], 2)) ?>
-                        </option>
-                    <?php endforeach; ?>
-                </select>
-                <button type="button" class="btn btn-sm btn-outline-danger remove-service">✕</button>
-            </div>
-        </div>
-    </template>
-
-    <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="../assets/script.js"></script>
+    <script>
+    // Calculate total price in real-time
+    document.addEventListener('DOMContentLoaded', () => {
+        const checkboxes = document.querySelectorAll('input[name="services[]"]');
+        const totalPriceEl = document.getElementById('total-price');
+        const totalPriceInput = document.getElementById('total-price-input');
+        
+        function updateTotal() {
+            let total = 0;
+            checkboxes.forEach(checkbox => {
+                if (checkbox.checked) {
+                    // Get price from data attribute (you'll need to add this to HTML)
+                    const price = parseFloat(checkbox.closest('.service-item').dataset.price);
+                    if (!isNaN(price)) total += price;
+                }
+            });
+            totalPriceEl.textContent = total.toFixed(2);
+            totalPriceInput.value = total;
+        }
+        
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', updateTotal);
+        });
+        
+        // Initialize
+        updateTotal();
+    });
+    </script>
 </body>
 </html>
