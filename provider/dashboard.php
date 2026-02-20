@@ -40,13 +40,11 @@ $services = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <div class="card h-100">
                         <div class="position-relative">
                             <?php if (!empty($service['image_url'])): ?>
-                                <img src="/samaaroh/<?= htmlspecialchars(trim($service['image_url'])) ?>" 
-                                     class="service-image" 
-                                     alt="<?= htmlspecialchars($service['title']) ?>"
-                                     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
-                            <?php endif; ?>
-                            <?php if (empty($service['image_url']) || !empty($service['image_url'])): ?>
-                                <div class="service-image bg-light d-flex align-items-center justify-content-center" style="<?= !empty($service['image_url']) ? 'display:none;' : '' ?>">
+                                <img src="<?= htmlspecialchars($service['image_url']) ?>" 
+                                    class="service-image" 
+                                    alt="<?= htmlspecialchars($service['title']) ?>">
+                            <?php else: ?>
+                                <div class="service-image bg-light d-flex align-items-center justify-content-center">
                                     <span class="text-muted">No Image</span>
                                 </div>
                             <?php endif; ?>

@@ -1,6 +1,6 @@
 <?php
 include '../includes/auth_check.php';
-if ($_SESSION['role'] !== 'customer') { 
+if ($_SESSION['role'] !== 'admin') { 
     header("Location: ../login.php"); 
     exit(); 
 }

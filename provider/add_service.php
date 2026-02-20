@@ -5,55 +5,46 @@ if ($_SESSION['role'] !== 'provider') {
     exit();
 }
 include '../config/db.php';
+include '../includes/cloudinary.php';
 
 $msg = '';
-if ($_POST) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
     $title = trim($_POST['title']);
     $desc = trim($_POST['description']);
     $price = floatval($_POST['price']);
     $category = $_POST['category'];
     $tier = $_POST['package_tier'];
-
-    // LOCAL FILE UPLOAD
     $image_url = null;
+
     if (!empty($_FILES['image']['name'])) {
-        $upload_dir = __DIR__ . '/../../uploads/services/';
-        
-        if (!is_dir($upload_dir)) {
-            mkdir($upload_dir, 0777, true);
-        }
-        
-        $ext = strtolower(pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION));
-        $allowed_ext = ['jpg', 'jpeg', 'png', 'gif'];
-        
-        if (in_array($ext, $allowed_ext)) {
-            $filename = uniqid() . '.' . $ext;
-            $target = $upload_dir . $filename;
-            
-            if (move_uploaded_file($_FILES['image']['tmp_name'], $target)) {
-                $image_url = 'uploads/services/' . $filename;
-            } else {
-                $msg = "❌ File upload failed. Check folder permissions.";
-            }
-        } else {
-            $msg = "❌ Invalid file type. Use JPG, PNG, or GIF.";
-        }
+        $image_url = cloudinaryUpload(
+            $_FILES['image']['tmp_name'],
+            $_FILES['image']['name']
+        );
     }
 
-    if (!$msg) {
-        try {
-            $stmt = $pdo->prepare("
-                INSERT INTO services 
-                (provider_id, title, description, price, category, package_tier, image_url)
-                VALUES (?, ?, ?, ?, ?, ?, ?)
-            ");
-            $stmt->execute([
-                $_SESSION['user_id'], $title, $desc, $price, $category, $tier, $image_url
-            ]);
-            $msg = "✅ Service added successfully!";
-        } catch (Exception $e) {
-            $msg = "❌ Database error: " . $e->getMessage();
-        }
+    try {
+        $stmt = $pdo->prepare("
+            INSERT INTO services 
+            (provider_id, title, description, price, category, package_tier, image_url)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        ");
+
+        $stmt->execute([
+            $_SESSION['user_id'],
+            $title,
+            $desc,
+            $price,
+            $category,
+            $tier,
+            $image_url
+        ]);
+
+        $msg = "✅ Service added successfully!";
+
+    } catch (Exception $e) {
+        $msg = "❌ Database error: " . $e->getMessage();
     }
 }
 ?>

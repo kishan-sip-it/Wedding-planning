@@ -78,7 +78,7 @@
                                 <div class="service-card card h-100">
                                     <div class="position-relative">
                                         <?php if (!empty($service['image_url'])): ?>
-                                            <img src="<?= htmlspecialchars('../' . $service['image_url']) ?>"
+                                            <img src="<?= htmlspecialchars($service['image_url']) ?>">
  
                                                 class="service-image" 
                                                 alt="<?= htmlspecialchars($service['title']) ?>">
@@ -122,7 +122,7 @@
                                 <div class="service-card card h-100">
                                     <div class="position-relative">
                                         <?php if (!empty($service['image_url'])): ?>
-                                            <img src="<?= htmlspecialchars('../' . $service['image_url']) ?>"
+                                            <img src="<?= htmlspecialchars($service['image_url']) ?>">
  
                                                 class="service-image" 
                                                 alt="<?= htmlspecialchars($service['title']) ?>">
@@ -166,7 +166,7 @@
                                 <div class="service-card card h-100">
                                     <div class="position-relative">
                                         <?php if (!empty($service['image_url'])): ?>
-                                            <img src="<?= htmlspecialchars('../' . $service['image_url']) ?>"
+                                            <img src="<?= htmlspecialchars($service['image_url']) ?>">
  
                                                 class="service-image" 
                                                 alt="<?= htmlspecialchars($service['title']) ?>">

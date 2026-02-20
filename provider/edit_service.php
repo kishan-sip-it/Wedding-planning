@@ -38,27 +38,7 @@ if ($_POST) {
 
     if (!empty($_FILES['image']['name'])) {
         // === CLOUDINARY UPLOAD (same as add_service.php) ===
-        function cloudinaryUpload($fileTmp, $fileName) {
-            $cloudName = 'dmqbtapai';
-            $apiKey = '414692264414951';
-            $apiSecret = '6iwfD8l3pDenDA8tnhKfi25Xs_M';
-
-            $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, "https://api.cloudinary.com/v1_1/$cloudName/image/upload");
-            curl_setopt($ch, CURLOPT_POST, true);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, [
-                'file' => new CURLFile($fileTmp, 'image/' . pathinfo($fileName, PATHINFO_EXTENSION), $fileName),
-                'upload_preset' => 'samaaroh'
-            ]);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-
-            $response = curl_exec($ch);
-            curl_close($ch);
-
-            $data = json_decode($response, true);
-            return $data['secure_url'] ?? null;
-        }
+        include '../includes/cloudinary.php';
 
         $newImageUrl = cloudinaryUpload($_FILES['image']['tmp_name'], $_FILES['image']['name']);
         if ($newImageUrl) {

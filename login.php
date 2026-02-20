@@ -18,9 +18,17 @@ if ($_POST) {
         session_regenerate_id(true);
 
         switch ($user['role']) {
-            case 'admin': header("Location: admin/dashboard.php"); break;
-            case 'provider': header("Location: provider/dashboard.php"); break;
-            default: header("Location: customer/dashboard.php");include '../includes/navbar.php';
+            case 'admin':
+                header("Location: admin/dashboard.php");
+                exit();
+
+            case 'provider':
+                header("Location: provider/dashboard.php");
+                exit();
+
+            default:
+                header("Location: customer/dashboard.php");
+                exit();
         }
         exit();
     } else {
